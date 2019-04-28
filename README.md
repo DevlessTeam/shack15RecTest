@@ -13,6 +13,7 @@ with the least booking time being 30 minutes.
 with your solution as much as possible :)
 - Remember to fill out the <full name> and email section within the php file 
 Also note your code will be run using PHP 7.1 <
+- Clone the repo to work on it, when done please open a pull request with your solution
 
 *Happy coding !!!*
 
