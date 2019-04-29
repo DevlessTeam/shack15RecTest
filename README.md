@@ -11,7 +11,7 @@ with the least booking time being 30 minutes.
 - Functional class meaning the code should satisfy the test cases given below it
 - Also be aware there are other test cases your code will be run aganist that are not listed, so be exhaustive
 with your solution as much as possible :)
-- Remember to fill out the <full name> and email section within the php file 
+- Remember to fill out the <full name> and <email> section within the php file 
 Also note your code will be run using PHP 7.1 <
 - Clone the repo to work on it, when done please open a pull request with your solution
 
