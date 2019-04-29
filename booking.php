@@ -1,45 +1,130 @@
 <?php
-
-//<full name> <email>.
 interface BookingStructure
-{
-    private function bookASlot($from, $to);
+{   
+    //The interface method with private modifier prevents from being access its during implementation, hence making it public   
+    function bookASlot($from, $to);
 }
 
 
 class Booking implements BookingStructure
 {
     private $bookedSlots = [
-        ['from'=>'8:00', 'to'=>'9:30']
-       
+        ['from'=>'8:20', 'to'=>'9:30']
     ];
-    public function _construct($openingTime, $closingTime)
+
+    //added these properties to hold reference to the opening and closing time.
+    private $openingTime;
+    private $closingTime;
+
+    public function __construct($openingTime, $closingTime)
     {
-        //add code here
+        if(!$this->isTimeValid($openingTime))
+        {
+            throw new Exception('Invalid Opening Time');
+        }
+        $this->openingTime = $openingTime;
+    
+        if(!$this->isTimeValid($closingTime))
+        {
+            throw new Exception("Invalid Closing Time");
+        }
+        $this->closingTime = $closingTime;
     }
     
     public function getAllBookings()
     {
-        // add code here
+        return $this->bookedSlots;
     }
     
-    public function bookASlot()
+    public function bookASlot($from, $to)
     {
-        //add code here
+        if(!$this->isTimeValid($from))
+        {
+            throw new Exception('Invalid Start Time for booking');
+        }
+        if(!$this->isTimeValid($to))
+        {
+            throw new Exception("Invalid Closing Time for booking");
+        }
+
+        if($this->timeDifference($from, $to) < 30){
+            throw new Exception("Sorry you can't book less than 30 minutes ...");
+        }
+        if($this->timeDifference($this->getOpeningTime(), $from) < 0){
+            throw new Exception("Sorry you can't book outside of the opening time ...");
+        }
+        if($this->timeDifference($this->getClosingTime(), $to) > 0){
+            throw new Exception("Sorry you can't book outside of the closing time ...");
+        }
+
+        foreach ($this->bookedSlots as $slot) {
+            if($slot["from"] == $from){
+                throw new Exception("Sorry Arealdy booked ...");
+            }
+            if($slot["to"] == $to){
+                throw new Exception("Sorry Arealdy booked ...");
+            }
+            $this->checkDateIntervalValidity($from, $to, $slot);
+        }
+
+        $this->bookedSlots[] = ["from"=>$from, "to"=>$to];
     }
     
     public function getOpeningTime()
     {
-        // add code here
+        return $this->openingTime;
     }
     
     public function getClosingTime()
     {
-        // add code here
+        return $this->closingTime;
+    }
+
+    private function isTimeValid($time)
+    {
+        if(empty($time)) return  false;
+        $timeDestructuring = explode(":", $time);
+        if(count($timeDestructuring) != 2) return false;
+        if(strlen($timeDestructuring[0]) >3 )return false;
+        if(strlen($timeDestructuring[1]) != 2) return false;
+        return true;
+    }
+
+    private function timeDifference($first, $second)
+    {
+        $first = str_replace(":", "", $first);
+        $second = str_replace(":", "", $second);
+        return (int)$second - (int)$first ;
+    }
+
+    private function getTime($time)
+    {
+        $timeDestructuring = explode(":", $time);
+        return array("hours" => $timeDestructuring[0], "minutes"=> $timeDestructuring[1]);
+    }
+
+    private function checkDateIntervalValidity($from, $to, $current){
+        $fromHours = $this->getTime($from)["hours"];
+        $fromMinutes = $this->getTime($from)["minutes"];
+        $toHours = $this->getTime($to)["hours"];        
+        $toMinutes = $this->getTime($to)["minutes"];
+
+        $currentFromHours = $this->getTime($current["from"])["hours"];
+        $currentFromMinutes = $this->getTime($current["from"])["minutes"];
+        $currentToHours = $this->getTime($current["to"])["hours"];        
+        $currentToMinutes = $this->getTime($current["to"])["minutes"];
+        
+        if($fromHours == $currentFromHours && $fromMinutes > $currentFromMinutes && $fromMinutes < $toMinutes  ) 
+        {
+            throw new Exception("Sorry you can't book in between booked hours");
+        }
+
+        if($fromHours == $currentFromHours && $fromMinutes > $currentFromMinutes && $this->timeDifference($this->getTime($to), $to) > 0){
+            throw new Exception("Sorry you can't book in between booked hours");
+        }
+
     }
 }
-
-
 /* Test Cases */
 $bookingInstance = new Booking("6:30", "18:00");
 var_dump($bookingInstance->getAllBookings()); // array(1) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } }
