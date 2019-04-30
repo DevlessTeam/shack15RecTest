@@ -1,4 +1,6 @@
 <?php
+
+//<Oliver Mensah> <olivermensah96@gmail.com>.
 interface BookingStructure
 {   
     //The interface method with private modifier prevents from being access its during implementation, hence making it public   
@@ -50,11 +52,18 @@ class Booking implements BookingStructure
         if($this->timeDifference($from, $to) < 30){
             throw new Exception("Sorry you can't book less than 30 minutes ...");
         }
+        if($this->timeDifference($from, $to) < 30){
+            throw new Exception("Sorry you can't book less than 30 minutes ...");
+        }
         if($this->timeDifference($this->getOpeningTime(), $from) < 0){
             throw new Exception("Sorry you can't book outside of the opening time ...");
         }
         if($this->timeDifference($this->getClosingTime(), $to) > 0){
             throw new Exception("Sorry you can't book outside of the closing time ...");
+        }
+        if($this->timeDifference> 200){
+            throw new Exception("Sorry you can't book above a 2 hour slot in ...");
+
         }
 
         foreach ($this->bookedSlots as $slot) {
@@ -79,7 +88,11 @@ class Booking implements BookingStructure
     {
         return $this->closingTime;
     }
-
+    /**
+     * Checks the validity of a given time
+     * @param string $time   the given time
+     * @return boolean
+     */
     private function isTimeValid($time)
     {
         if(empty($time)) return  false;
@@ -90,19 +103,34 @@ class Booking implements BookingStructure
         return true;
     }
 
+     /**
+     * Finds difference between two given time
+     * @param string $first  
+     * @param string $second 
+     * @return int
+     */
     private function timeDifference($first, $second)
     {
         $first = str_replace(":", "", $first);
         $second = str_replace(":", "", $second);
         return (int)$second - (int)$first ;
     }
-
+    /**
+     * Gets hours and minutes from a given time
+     * @param string $time  
+     * @return array
+     */
     private function getTime($time)
     {
         $timeDestructuring = explode(":", $time);
         return array("hours" => $timeDestructuring[0], "minutes"=> $timeDestructuring[1]);
     }
-
+    /**
+     * finds the time interval validity given
+     * @param string $from  
+     * @param string $to 
+     * @param string $current
+     */
     private function checkDateIntervalValidity($from, $to, $current){
         $fromHours = $this->getTime($from)["hours"];
         $fromMinutes = $this->getTime($from)["minutes"];
@@ -125,6 +153,8 @@ class Booking implements BookingStructure
 
     }
 }
+
+
 /* Test Cases */
 $bookingInstance = new Booking("6:30", "18:00");
 var_dump($bookingInstance->getAllBookings()); // array(1) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } }
