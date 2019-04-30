@@ -18,6 +18,9 @@ class Booking implements BookingStructure
     private $openingTime;
     private $closingTime;
 
+    const THIRTYMINDIFF = 30; // 7:10 - 7:40 => 740 - 710 => 30
+    const TWOHRDIFF = 200; // 7:00 - 9:00 => 900 - 700 => 200
+
     public function __construct($openingTime, $closingTime)
     {
         if(!$this->isTimeValid($openingTime))
@@ -49,10 +52,10 @@ class Booking implements BookingStructure
             throw new Exception("Invalid Closing Time for booking");
         }
 
-        if($this->timeDifference($from, $to) < 30){
+        if($this->timeDifference($from, $to) < self::THIRTYMINDIFF){
             throw new Exception("Sorry you can't book less than 30 minutes ...");
         }
-        if($this->timeDifference($from, $to) < 30){
+        if($this->timeDifference($from, $to) < self::THIRTYMINDIFF){
             throw new Exception("Sorry you can't book less than 30 minutes ...");
         }
         if($this->timeDifference($this->getOpeningTime(), $from) < 0){
@@ -61,7 +64,7 @@ class Booking implements BookingStructure
         if($this->timeDifference($this->getClosingTime(), $to) > 0){
             throw new Exception("Sorry you can't book outside of the closing time ...");
         }
-        if($this->timeDifference> 200){
+        if($this->timeDifference($from, $to)> self::TWOHRDIFF){
             throw new Exception("Sorry you can't book above a 2 hour slot in ...");
 
         }
@@ -132,11 +135,13 @@ class Booking implements BookingStructure
      * @param string $current
      */
     private function checkDateIntervalValidity($from, $to, $current){
+        //the time for booking
         $fromHours = $this->getTime($from)["hours"];
         $fromMinutes = $this->getTime($from)["minutes"];
         $toHours = $this->getTime($to)["hours"];        
         $toMinutes = $this->getTime($to)["minutes"];
 
+        //current time at a given index of the data store
         $currentFromHours = $this->getTime($current["from"])["hours"];
         $currentFromMinutes = $this->getTime($current["from"])["minutes"];
         $currentToHours = $this->getTime($current["to"])["hours"];        
