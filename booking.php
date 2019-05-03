@@ -23,7 +23,6 @@ class Booking implements BookingStructure
 
     private $bookedSlots = [
         ['from'=>'8:00', 'to'=>'9:30']
-       
     ];
 
     public function __construct($openingTime, $closingTime)
@@ -49,7 +48,7 @@ class Booking implements BookingStructure
       $to_hour = $to_minute = 0;
       list($to_hour, $to_minute) = explode(':', $to); 
 
-     $booked_from_hour = $booked_from_minute = 0;
+      $booked_from_hour = $booked_from_minute = 0;
       list($booked_from_hour, $booked_from_minute) = explode(':',$this->bookedSlots[0]['from']);
 
       $booked_to_hour = $booked_to_minute = 0;
@@ -115,16 +114,16 @@ class Booking implements BookingStructure
 
     public function convertHoursToMinutes($time){
 
-            $minute = 0;
+            $minutes = 0;
             $time = explode(":", $time); 
 
             $hours = $time[0]; 
             if(!empty($time[1])) { 
                 $m = $time[1]; 
             }else{ 
-                $minute = "00"; 
+                $minutes = "00"; 
             } 
-            $mm = ($hours * 60)+$minute; 
+            $mm = ($hours * 60)+$minutes; 
             return $mm; 
     }
 
