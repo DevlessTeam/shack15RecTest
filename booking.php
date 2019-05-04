@@ -13,9 +13,35 @@ class Booking implements BookingStructure
         ['from'=>'8:00', 'to'=>'9:30']
        
     ];
+
+    /**
+     * The opening time as Unix timestamp
+     *
+     * @var int
+     */
+    private $openingTime;
+
+    /**
+     * The closing time as Unix timestamp
+     *
+     * @var int
+     */
+    private $closingTime;
+
+    /**
+     * The current or last booked slot
+     *
+     * @var array
+     */
+    private $lastBooking;
+
     public function __construct($openingTime, $closingTime)
     {
-        //add code here
+        $this->openingTime = strtotime($this->convertTime($openingTime));
+        $this->closingTime = strtotime($this->convertTime($closingTime));
+
+        $this->lastBooking = end($this->bookedSlots);
+
     }
     
     public function getAllBookings()
@@ -25,7 +51,12 @@ class Booking implements BookingStructure
 
     public function bookASlot($from, $to)
     {
-        //add code here
+        $last_booking_opening_time = strtotime($this->convertTime($this->lastBooking['from']));
+        $last_booking_closing_time = strtotime($this->convertTime($this->lastBooking['to']));
+
+        $booked_opening_time = strtotime($this->convertTime($from));
+        $booked_closing_time = strtotime($this->convertTime($to));
+
     }
     
     public function getOpeningTime()
@@ -37,6 +68,15 @@ class Booking implements BookingStructure
     {
         // add code here
     }
+
+    /** Convert time to either AM or PM
+     * @param $time
+     * @return false|string
+     */
+    public function convertTime($time){
+        return date('h:i a', strtotime($time));
+    }
+
 }
 
 
