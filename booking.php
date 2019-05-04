@@ -57,6 +57,9 @@ class Booking implements BookingStructure
         $booked_opening_time = strtotime($this->convertTime($from));
         $booked_closing_time = strtotime($this->convertTime($to));
 
+        $booked_minutes = abs($booked_opening_time - $booked_closing_time) / 60;
+        $booked_hours = abs($booked_minutes) / 60;
+
     }
     
     public function getOpeningTime()
