@@ -1,9 +1,9 @@
 <?php
 
-//<full name> <email>.
+//Daniel Mantey Mensah contactmantey@gmail.com.
 interface BookingStructure
 {
-    private function bookASlot($from, $to);
+    public function bookASlot($from, $to);
 }
 
 
@@ -22,7 +22,7 @@ class Booking implements BookingStructure
     {
         // add code here
     }
-    
+
     public function bookASlot()
     {
         //add code here
