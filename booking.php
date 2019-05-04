@@ -28,12 +28,6 @@ class Booking implements BookingStructure
      */
     private $closingTime;
 
-    /**
-     * The current or last booked slot
-     *
-     * @var array
-     */
-    private $lastBooking;
 
     public function __construct($openingTime, $closingTime)
     {
@@ -41,8 +35,6 @@ class Booking implements BookingStructure
 
         $this->openingTime = strtotime($this->convertTime($openingTime));
         $this->closingTime = strtotime($this->convertTime($closingTime));
-
-        $this->lastBooking = end($this->bookedSlots);
 
     }
 
@@ -53,8 +45,10 @@ class Booking implements BookingStructure
 
     public function bookASlot($from, $to)
     {
-        $last_booking_opening_time = strtotime($this->convertTime($this->lastBooking['from']));
-        $last_booking_closing_time = strtotime($this->convertTime($this->lastBooking['to']));
+        $last_booking = end($this->bookedSlots);
+
+        $last_booking_opening_time = strtotime($this->convertTime($last_booking['from']));
+        $last_booking_closing_time = strtotime($this->convertTime($last_booking['to']));
 
         $booked_opening_time = strtotime($this->convertTime($from));
         $booked_closing_time = strtotime($this->convertTime($to));
@@ -79,8 +73,8 @@ class Booking implements BookingStructure
         }
 
         if ($booked_opening_time < $last_booking_closing_time) {
-            throw new Exception("Exception Sorry there is a meeting from " . $this->lastBooking['from'] .
-                " to " . $this->lastBooking['to'] . " .");
+            throw new Exception("Exception Sorry there is a meeting from " . $last_booking['from'] .
+                " to " . $last_booking['to'] . " .");
         }
 
         $new_booking = [
@@ -126,14 +120,21 @@ class Booking implements BookingStructure
 
 /* Test Cases */
 $bookingInstance = new Booking("6:30", "18:00");
-var_dump($bookingInstance->getAllBookings()); // array(1) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } }
-var_dump($bookingInstance->bookASlot('8:00', '8:30')); // Uncaught exception: Exception Sorry there is a meeting from 8:00 to 9:30 ...
-var_dump($bookingInstance->bookASlot('8:00', '8:00')); // Uncaught exception: Exception Sorry you can't book less than a 30 min slot ...
-var_dump($bookingInstance->bookASlot('8:00', '18:00')); // Uncaught exception: Exception Sorry you can't book above a 2 hour slot in ...
-var_dump($bookingInstance->bookASlot('8:00', '23:00')); // Uncaught exception: Exception Sorry you can't book outside of the closing time ...
-var_dump($bookingInstance->bookASlot('24:00', '12:15')); // Uncaught exception: Exception Sorry you can't book outside of the closing time ...
-var_dump($bookingInstance->getOpeningTime()); // string(4) "6:30"
-var_dump($bookingInstance->getClosingTime()); // string(5) "18:00"
+//var_dump($bookingInstance->getAllBookings()); // array(1) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } }
+//var_dump($bookingInstance->bookASlot('8:00', '8:30')); // Uncaught exception: Exception Sorry there is a meeting from 8:00 to 9:30 ...
+//var_dump($bookingInstance->bookASlot('8:00', '8:00')); // Uncaught exception: Exception Sorry you can't book less than a 30 min slot ...
+//var_dump($bookingInstance->bookASlot('8:00', '18:00')); // Uncaught exception: Exception Sorry you can't book above a 2 hour slot in ...
+//var_dump($bookingInstance->bookASlot('8:00', '23:00')); // Uncaught exception: Exception Sorry you can't book outside of the closing time ...
+//var_dump($bookingInstance->bookASlot('24:00', '12:15')); // Uncaught exception: Exception Sorry you can't book outside of the closing time ...
+//var_dump($bookingInstance->getOpeningTime()); // string(4) "6:30"
+//var_dump($bookingInstance->getClosingTime()); // string(5) "18:00"
+
+$bookingInstance->bookASlot('9:30', '10:30');
+
+//var_dump($bookingInstance);
+
+$bookingInstance->bookASlot('10:25', '12:25');
+
 var_dump($bookingInstance->getAllBookings()); // array(2) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } [1]=> array(2) { ["from"]=> string(5) "12:00" ["to"]=> string(5) "12:15" } }
 
 
