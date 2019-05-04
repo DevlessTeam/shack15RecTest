@@ -74,7 +74,7 @@ class Booking implements BookingStructure
 
         if ($booked_opening_time < $last_booking_closing_time) {
             throw new Exception("Exception Sorry there is a meeting from " . $last_booking['from'] .
-                " to " . $last_booking['to'] . " .");
+                " to " . $last_booking['to']);
         }
 
         $new_booking = [
@@ -130,10 +130,8 @@ $bookingInstance = new Booking("6:30", "18:00");
 //var_dump($bookingInstance->getClosingTime()); // string(5) "18:00"
 
 $bookingInstance->bookASlot('9:30', '10:30');
-
-//var_dump($bookingInstance);
-
-$bookingInstance->bookASlot('10:25', '12:25');
+$bookingInstance->bookASlot('10:30', '12:25');
+$bookingInstance->bookASlot('12:10', '13:00');
 
 var_dump($bookingInstance->getAllBookings()); // array(2) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } [1]=> array(2) { ["from"]=> string(5) "12:00" ["to"]=> string(5) "12:15" } }
 
