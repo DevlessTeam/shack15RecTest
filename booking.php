@@ -37,6 +37,8 @@ class Booking implements BookingStructure
 
     public function __construct($openingTime, $closingTime)
     {
+        @set_exception_handler(array($this, 'handleException'));
+
         $this->openingTime = strtotime($this->convertTime($openingTime));
         $this->closingTime = strtotime($this->convertTime($closingTime));
 
@@ -60,6 +62,10 @@ class Booking implements BookingStructure
         $booked_minutes = abs($booked_opening_time - $booked_closing_time) / 60;
         $booked_hours = abs($booked_minutes) / 60;
 
+        if ($booked_opening_time < $this->openingTime) {
+            throw new Exception("Exception Sorry you can't book outside of the opening time.");
+        }
+
     }
     
     public function getOpeningTime()
@@ -72,12 +78,23 @@ class Booking implements BookingStructure
         // add code here
     }
 
-    /** Convert time to either AM or PM
+    /**
+     * Convert time to either AM or PM
      * @param $time
      * @return false|string
      */
-    public function convertTime($time){
+    public function convertTime($time)
+    {
         return date('h:i a', strtotime($time));
+    }
+
+    /**
+     * Set a top level exception handler to handle all uncaught exception
+     * @param $e
+     */
+    public function handleException($e)
+    {
+        echo "Uncaught exception: " .$e->getMessage();
     }
 
 }
@@ -85,13 +102,13 @@ class Booking implements BookingStructure
 
 /* Test Cases */
 $bookingInstance = new Booking("6:30", "18:00");
-var_dump($bookingInstance->getAllBookings()); // array(1) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } }
-var_dump($bookingInstance->bookASlot('8:00', '8:30')); // Uncaught exception: Exception Sorry there is a meeting from 8:00 to 9:30 ...
-var_dump($bookingInstance->bookASlot('8:00', '8:00')); // Uncaught exception: Exception Sorry you can't book less than a 30 min slot ...
-var_dump($bookingInstance->bookASlot('8:00', '18:00')); // Uncaught exception: Exception Sorry you can't book above a 2 hour slot in ...
-var_dump($bookingInstance->bookASlot('8:00', '23:00')); // Uncaught exception: Exception Sorry you can't book outside of the closing time ...
-var_dump($bookingInstance->bookASlot('12:00', '12:15')); // Uncaught exception: Exception Sorry you can't book outside of the closing time ...
-var_dump($bookingInstance->getOpeningTime()); // string(4) "6:30"
-var_dump($bookingInstance->getClosingTime()); // string(5) "18:00"
-var_dump($bookingInstance->getAllBookings()); // array(2) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } [1]=> array(2) { ["from"]=> string(5) "12:00" ["to"]=> string(5) "12:15" } }
+//var_dump($bookingInstance->getAllBookings()); // array(1) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } }
+//var_dump($bookingInstance->bookASlot('8:00', '8:30')); // Uncaught exception: Exception Sorry there is a meeting from 8:00 to 9:30 ...
+//var_dump($bookingInstance->bookASlot('8:00', '8:00')); // Uncaught exception: Exception Sorry you can't book less than a 30 min slot ...
+//var_dump($bookingInstance->bookASlot('8:00', '18:00')); // Uncaught exception: Exception Sorry you can't book above a 2 hour slot in ...
+//var_dump($bookingInstance->bookASlot('8:00', '23:00')); // Uncaught exception: Exception Sorry you can't book outside of the closing time ...
+var_dump($bookingInstance->bookASlot('24:00', '12:15')); // Uncaught exception: Exception Sorry you can't book outside of the closing time ...
+//var_dump($bookingInstance->getOpeningTime()); // string(4) "6:30"
+//var_dump($bookingInstance->getClosingTime()); // string(5) "18:00"
+//var_dump($bookingInstance->getAllBookings()); // array(2) { [0]=> array(2) { ["from"]=> string(4) "8:00" ["to"]=> string(4) "9:30" } [1]=> array(2) { ["from"]=> string(5) "12:00" ["to"]=> string(5) "12:15" } }
 
