@@ -23,7 +23,7 @@ class Booking implements BookingStructure
         // add code here
     }
 
-    public function bookASlot()
+    public function bookASlot($from, $to)
     {
         //add code here
     }
