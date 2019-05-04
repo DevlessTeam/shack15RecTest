@@ -13,7 +13,7 @@ class Booking implements BookingStructure
         ['from'=>'8:00', 'to'=>'9:30']
        
     ];
-    public function _construct($openingTime, $closingTime)
+    public function __construct($openingTime, $closingTime)
     {
         //add code here
     }
