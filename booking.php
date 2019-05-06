@@ -1,6 +1,6 @@
 <?php
 
-//<full name> <email>.
+//Isaac Gyasi Nimako - gyasinimako.gh@gmail.com.
 interface BookingStructure
 {
     private function bookASlot($from, $to);
